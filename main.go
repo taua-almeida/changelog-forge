@@ -22,7 +22,8 @@ func main() {
 	} else if *generateJson {
 		cmd.GenerateJSON()
 	} else if *updateChangelog {
-		cmd.UpdateChangelog()
+		newVersion := cmd.UpdateChangelog()
+		fmt.Println(newVersion)
 	} else {
 		fmt.Println("Usage: changelog-forge --generate-json or --update-changelog")
 	}

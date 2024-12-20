@@ -10,7 +10,7 @@ import (
 	"github.com/taua-almeida/changelog-forge/internal/versioning"
 )
 
-func UpdateChangelog() {
+func UpdateChangelog() string {
 	inputFile := "changelog.json"
 	data, err := os.ReadFile(inputFile)
 	if err != nil {
@@ -77,6 +77,7 @@ func UpdateChangelog() {
 	}
 
 	fmt.Println("CHANGELOG.md updated successfully!")
+	return newVersion
 }
 
 func extractLastVersion(changelogContent string) string {
