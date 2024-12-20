@@ -21,7 +21,7 @@ jobs:
       - name: Generate CHANGELOG.md
         run: |
           if [ -f changelog.json ]; then
-            NEW_VERSION=$(go run main.go --update-changelog)
+            NEW_VERSION=$(go run main.go --update-changelog | tail -n 1)
             echo "new_version=${NEW_VERSION}" >> $GITHUB_ENV
             rm -f changelog.json
           else
