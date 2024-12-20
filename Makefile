@@ -3,3 +3,6 @@ update-changelog:
 
 generate-json:
 	@go run main.go --generate-json
+
+run-tests:
+	@go test ./... -v

@@ -9,7 +9,13 @@ import (
 )
 
 func TestUpdateChangelog(t *testing.T) {
-	// Create a temporary changelog.json
+	// Create a .changeset folder and a sample changelog file
+	err := os.Mkdir(".changeset", 0755)
+	if err != nil {
+		t.Fatalf("failed to create .changeset directory: %v", err)
+	}
+
+	changelogFile := ".changeset/test-changelog.json"
 	changelogContent := `{
 		"version": "patch",
 		"date": "2024-12-20",
@@ -19,7 +25,7 @@ func TestUpdateChangelog(t *testing.T) {
 			"remove unused icons"
 		]
 	}`
-	err := os.WriteFile("changelog.json", []byte(changelogContent), 0644)
+	err = os.WriteFile(changelogFile, []byte(changelogContent), 0644)
 	if err != nil {
 		t.Fatalf("failed to create changelog.json: %v", err)
 	}
@@ -27,7 +33,8 @@ func TestUpdateChangelog(t *testing.T) {
 	// Create a temporary CHANGELOG.md
 	initialChangelog := `# Changelog
 
-All changes to this project will be documented in this file.
+All changes to this project will be documented in this file, following the format according to https://keepachangelog.com/en/1.1.0/.
+The changes should always start with: Add, Change, Deprecate, Remove, Fix, Security.
 
 ## [v1.8.21] - 2024-12-19
 - Fix minor bug
@@ -40,7 +47,7 @@ All changes to this project will be documented in this file.
 	// Run the UpdateChangelog function
 	cmd.UpdateChangelog()
 
-	// Verify the output in CHANGELOG.md
+	// Verify the updated CHANGELOG.md
 	updatedChangelog, err := os.ReadFile("CHANGELOG.md")
 	if err != nil {
 		t.Fatalf("failed to read updated CHANGELOG.md: %v", err)
@@ -56,7 +63,7 @@ All changes to this project will be documented in this file.
 	}
 
 	// Cleanup
-	_ = os.Remove("changelog.json")
+	_ = os.RemoveAll(".changeset")
 	_ = os.Remove("CHANGELOG.md")
 }
 

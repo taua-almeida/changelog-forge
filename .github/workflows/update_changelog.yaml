@@ -20,12 +20,16 @@ jobs:
 
       - name: Generate CHANGELOG.md
         run: |
-          if [ -f changelog.json ]; then
-            NEW_VERSION=$(go run main.go --update-changelog | tail -n 1)
-            echo "new_version=${NEW_VERSION}" >> $GITHUB_ENV
-            rm -f changelog.json
+          changeset_files=$(find ./.changeset -type f -name "*.json")
+          if [[ -n "$changeset_files" ]]; then
+            for file in $changeset_files; do
+              echo "Processing $file"
+              NEW_VERSION=$(go run main.go --update-changelog $file | tail -n 1)
+              echo "new_version=${NEW_VERSION}" >> $GITHUB_ENV
+              rm -f "$file"
+            done
           else
-            echo "No changelog.json found. Skipping generation."
+            echo "No changeset JSON files found. Skipping generation."
           fi
 
       - name: Commit changes
@@ -35,8 +39,8 @@ jobs:
           git config --global user.name "🦋 GitHub Actions"
           git config --global user.email "actions@github.com"
           git remote set-url origin https://x-access-token:${GH_ACTIONS_TOKEN}@github.com/taua-almeida/changelog-forge.git
-          git add CHANGELOG.md changelog.json || true
-          git commit -m "🦋 Update CHANGELOG.md [skip ci]" || echo "No changes to commit."
+          git add CHANGELOG.md .changeset/*.json || true
+          git commit -m "🦋 Update CHANGELOG.md and clean changeset [skip ci]" || echo "No changes to commit."
           git push
 
       - name: Create GitHub Release

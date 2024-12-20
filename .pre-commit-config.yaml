@@ -1,16 +1,16 @@
 repos:
   - repo: local
     hooks:
-      - id: changelog-json-check
-        name: Validate changelog.json
+      - id: changeset-json-check
+        name: Validate changeset JSON
         entry: |
           bash -c '
-          changelog_files=$(find . -type f -name "changelog.json" -not -path "./testdata/*");
-          if [[ -n "$changelog_files" ]]; then
-            echo "Validation passed for changelog.json.";
+          changeset_files=$(find ./.changeset -type f -name "*.json");
+          if [[ -n "$changeset_files" ]]; then
+            echo "Validation passed for changeset JSON files.";
             exit 0;
           else
-            echo "Error: No changelog.json found!";
+            echo "Error: No changeset JSON files found in .changeset folder!";
             exit 1;
           fi
           '

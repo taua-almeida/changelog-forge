@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -11,8 +12,29 @@ import (
 )
 
 func UpdateChangelog() string {
-	inputFile := "changelog.json"
-	data, err := os.ReadFile(inputFile)
+	changesetDir := ".changeset"
+	files, err := os.ReadDir(changesetDir)
+	if err != nil {
+		fmt.Printf("failed to read directory: %v\n", err)
+		os.Exit(1)
+	}
+
+	jsonFiles := []string{}
+
+	for _, file := range files {
+		if filepath.Ext(file.Name()) == ".json" {
+			jsonFiles = append(jsonFiles, file.Name())
+		}
+	}
+
+	if len(jsonFiles) == 0 || len(jsonFiles) > 1 {
+		fmt.Println("expected exactly one JSON file in .changeset directory")
+		os.Exit(1)
+	}
+
+	changelogFile := jsonFiles[0]
+
+	data, err := os.ReadFile(filepath.Join(changesetDir, changelogFile))
 	if err != nil {
 		fmt.Printf("failed to read file: %v\n", err)
 		os.Exit(1)

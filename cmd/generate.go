@@ -6,12 +6,14 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"golang.org/x/exp/rand"
 )
 
 const listHeight = 9
@@ -127,7 +129,33 @@ func (m model) View() string {
 	return ""
 }
 
+var adjectives = []string{
+	"brilliant", "lazy", "energetic", "sleepy", "grumpy",
+	"cheerful", "mighty", "tiny", "fancy", "witty",
+}
+
+var nouns = []string{
+	"butterfly", "unicorn", "kitten", "wizard", "robot",
+	"phoenix", "dragon", "penguin", "octopus", "yeti",
+}
+
+func randomName() string {
+	rand.Seed(uint64(time.Now().UnixNano()))
+	adj := adjectives[rand.Intn(len(adjectives))]
+	noun := nouns[rand.Intn(len(nouns))]
+	return fmt.Sprintf("%s-%s", adj, noun)
+}
+
 func GenerateJSON() {
+	// Ensure the .changeset directory exists
+	changesetDir := ".changeset"
+	if _, err := os.Stat(changesetDir); os.IsNotExist(err) {
+		if err := os.Mkdir(changesetDir, 0755); err != nil {
+			fmt.Printf("Error creating directory: %v\n", err)
+			os.Exit(1)
+		}
+	}
+
 	// Run the Bubble Tea program for selecting version type
 	p := tea.NewProgram(initialModel())
 	finalModel, err := p.Run()
@@ -175,7 +203,10 @@ func GenerateJSON() {
 	}
 
 	// Write to file
-	file, err := os.Create("changelog.json")
+	fileName := fmt.Sprintf("%s.json", randomName())
+	filePath := filepath.Join(changesetDir, fileName)
+
+	file, err := os.Create(filePath)
 	if err != nil {
 		fmt.Printf("Error creating file: %v\n", err)
 		os.Exit(1)
