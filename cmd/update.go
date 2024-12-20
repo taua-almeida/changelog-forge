@@ -106,9 +106,9 @@ func UpdateChangelog() string {
 func insertNewEntry(changelogContent, newEntry string) string {
 	lines := strings.Split(changelogContent, "\n")
 	for i, line := range lines {
-		if strings.Contains(line, "All changes to this project") {
-			// Insert new entry after the header
-			return strings.Join(lines[:i+2], "\n") + "\n\n" + newEntry + strings.Join(lines[i+2:], "\n")
+		if strings.HasPrefix(line, "## [v") { // Identify the topmost version entry
+			// Insert the new entry two lines above the topmost item
+			return strings.Join(lines[:i], "\n") + "\n" + newEntry + "\n" + strings.Join(lines[i:], "\n")
 		}
 	}
 	// If the header is not found, append to the top
