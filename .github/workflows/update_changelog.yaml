@@ -22,7 +22,7 @@ jobs:
         run: |
           if [ -f changelog.json ]; then
             NEW_VERSION=$(go run main.go --update-changelog)
-            echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
+            echo "new_version=${NEW_VERSION}" >> $GITHUB_ENV
             rm -f changelog.json
           else
             echo "No changelog.json found. Skipping generation."
