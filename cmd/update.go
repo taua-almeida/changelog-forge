@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/taua-almeida/changelog-forge/internal/utils"
 	"github.com/taua-almeida/changelog-forge/internal/versioning"
 )
 
@@ -58,7 +59,7 @@ func UpdateChangelog() string {
 	}
 
 	// Extract the last version
-	lastVersion := extractLastVersion(string(changelogData))
+	lastVersion := utils.ExtractLastVersion(string(changelogData))
 	if lastVersion == "" {
 		fmt.Println("failed to extract last version")
 		os.Exit(1)
@@ -100,16 +101,6 @@ func UpdateChangelog() string {
 
 	fmt.Println("CHANGELOG.md updated successfully!")
 	return newVersion
-}
-
-func extractLastVersion(changelogContent string) string {
-	lines := strings.Split(changelogContent, "\n")
-	for _, line := range lines {
-		if strings.HasPrefix(line, "## [v") {
-			return strings.TrimPrefix(strings.Split(line, "]")[0], "## [v")
-		}
-	}
-	return ""
 }
 
 func insertNewEntry(changelogContent, newEntry string) string {
