@@ -1,15 +1,18 @@
-- repo: local
-  hooks:
-    - id: changelog-json-check
-      name: Check for valid changelog.json
-      entry: bash -c "
-        if find . -type f -name 'changelog.json' -not -path './testdata/*' | grep -q .; then
-          echo 'changelog.json found and validated!';
-          exit 0;
-        else
-          echo 'Error: changelog.json not found!';
-          exit 1;
-        fi
-      "
-      language: system
-      files: ''
+repos:
+  - repo: local
+    hooks:
+      - id: changelog-json-check
+        name: Validate changelog.json
+        entry: |
+          bash -c '
+          changelog_files=$(find . -type f -name "changelog.json" -not -path "./testdata/*");
+          if [[ -n "$changelog_files" ]]; then
+            echo "Validation passed for changelog.json.";
+            exit 0;
+          else
+            echo "Error: No changelog.json found!";
+            exit 1;
+          fi
+          '
+        language: system
+        files: ''

@@ -1,0 +1,41 @@
+name: Update Changelog
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.23.4
+
+      - name: Install changelog-forge
+        run: |
+          go build -o changelog-forge ./cmd
+          sudo mv changelog-forge /usr/local/bin/
+
+      - name: Generate CHANGELOG.md
+        run: |
+          if [ -f changelog.json ]; then
+            changelog-forge update
+            rm changelog.json
+          else
+            echo "No changelog.json found. Skipping generation."
+          fi
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add CHANGELOG.md
+          git commit -m "Update CHANGELOG.md [skip ci]" || echo "No changes to commit."
+          git push

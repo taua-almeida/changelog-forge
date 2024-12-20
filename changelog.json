@@ -1,0 +1,7 @@
+{
+  "version": "major",
+  "date": "2024-12-20",
+  "descriptions": [
+    "add pre-commit"
+  ]
+}
