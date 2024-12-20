@@ -3,6 +3,13 @@
 All changes to this project will be documented in this file, following the format according to https://keepachangelog.com/en/1.1.0/.
 The changes should always start with: Add, Change, Deprecate, Remove, Fix, Security.
 
+## [v1.1.2] - 2024-12-20
+- Create changeset style
+- Change pre-commit
+- Change location of changelog
+- Remove build action
+- Update test
+
 ## [v1.1.1] - 2024-12-20
 - Fix release token
 - Add makefile
