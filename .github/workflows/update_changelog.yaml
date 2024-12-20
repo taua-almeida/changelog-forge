@@ -22,6 +22,7 @@ jobs:
         run: |
           go build -o changelog-forge ./cmd
           sudo mv changelog-forge /usr/local/bin/
+          sudo chmod +x /usr/local/bin/changelog-forge
 
       - name: Generate CHANGELOG.md
         run: |
