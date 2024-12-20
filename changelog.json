@@ -1,8 +1,0 @@
-{
-  "version": "minor",
-  "date": "2024-12-20",
-  "descriptions": [
-    "add release logic",
-    "remove changelog from repo"
-  ]
-}
