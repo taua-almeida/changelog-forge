@@ -3,6 +3,9 @@
 All changes to this project will be documented in this file, following the format according to https://keepachangelog.com/en/1.1.0/.
 The changes should always start with: Add, Change, Deprecate, Remove, Fix, Security.
 
+## [v1.1.9] - 2024-12-21
+- Readme update
+
 ## [v1.1.8] - 2024-12-21
 - Change version logic
 
