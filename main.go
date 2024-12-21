@@ -1,23 +1,25 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
-	"os"
+	"os/exec"
+	"strings"
 
 	"github.com/taua-almeida/changelog-forge/cmd"
-	"github.com/taua-almeida/changelog-forge/internal/utils"
 )
 
 var Version = "unknown"
 
-func getVersionFromChangeLog() string {
-	changelogData, err := os.ReadFile("CHANGELOG.md")
-	if err != nil {
+func getGitVersion() string {
+	cmd := exec.Command("git", "describe", "--tags", "--abbrev=0")
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	if err := cmd.Run(); err != nil {
 		return "unknown"
 	}
-
-	return utils.ExtractLastVersion(string(changelogData))
+	return strings.TrimSpace(out.String())
 }
 
 func main() {
@@ -28,6 +30,11 @@ func main() {
 	help := flag.Bool("help", false, "Show help")
 
 	flag.Parse()
+
+	// Fallback to Git tag if Version is unknown
+	if Version == "unknown" {
+		Version = getGitVersion()
+	}
 
 	if *help {
 		fmt.Println("Available options:")
@@ -41,9 +48,6 @@ func main() {
 		newVersion := cmd.UpdateChangelog()
 		fmt.Println(newVersion)
 	} else if *showVersion {
-		if Version == "unknown" {
-			Version = getVersionFromChangeLog()
-		}
 		fmt.Println("Version:", Version)
 	} else {
 		fmt.Println("Usage: changelog-forge --generate-json or --update-changelog")
