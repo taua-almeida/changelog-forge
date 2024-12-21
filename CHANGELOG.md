@@ -3,6 +3,9 @@
 All changes to this project will be documented in this file, following the format according to https://keepachangelog.com/en/1.1.0/.
 The changes should always start with: Add, Change, Deprecate, Remove, Fix, Security.
 
+## [v1.1.6] - 2024-12-21
+- Fix sematic release
+
 ## [v1.1.5] - 2024-12-20
 - Change logic to use top most version instead of under header
 - Add more tests
