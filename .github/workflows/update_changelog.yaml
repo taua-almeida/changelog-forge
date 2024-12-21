@@ -64,7 +64,10 @@ jobs:
       - name: Build Binaries
         run: |
           mkdir -p dist
-          LDFLAGS="-X 'main.Version=${{ needs.generate-changelog.outputs.new_version }}'"
+          VERSION="${{ needs.generate-changelog.outputs.new_version }}"
+          LDFLAGS="-X 'main.Version=$VERSION'"
+          echo "Building version $VERSION"
+          echo "LDFLAGS: $LDFLAGS"
           GOOS=linux GOARCH=amd64 go build -ldflags="$LDFLAGS" -o dist/changelog-forge-linux-amd64 .
           GOOS=darwin GOARCH=amd64 go build -ldflags="$LDFLAGS" -o dist/changelog-forge-darwin-amd64 .
           GOOS=windows GOARCH=amd64 go build -ldflags="$LDFLAGS" -o dist/changelog-forge-windows-amd64.exe
