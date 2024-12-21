@@ -29,7 +29,7 @@ jobs:
             for file in $changeset_files; do
               echo "Processing $file"
               NEW_VERSION=$(go run main.go --update-changelog $file | tail -n 1)
-              echo "::set-output name=new_version::$NEW_VERSION"
+              echo "::set-output name=new_version::v$NEW_VERSION"
               rm -f "$file"
             done
           else
@@ -68,6 +68,15 @@ jobs:
           GOOS=linux GOARCH=amd64 go build -ldflags="$LDFLAGS" -o dist/changelog-forge-linux-amd64 .
           GOOS=darwin GOARCH=amd64 go build -ldflags="$LDFLAGS" -o dist/changelog-forge-darwin-amd64 .
           GOOS=windows GOARCH=amd64 go build -ldflags="$LDFLAGS" -o dist/changelog-forge-windows-amd64.exe
+
+      - name: Push New Tag
+        run: |
+          git tag ${{ needs.generate-changelog.outputs.new_version }}
+          git push origin ${{ needs.generate-changelog.outputs.new_version }}
+
+      - name: Refresh Go Proxy
+        run: |
+          curl https://proxy.golang.org/github.com/taua-almeida/changelog-forge/@v/${{ needs.generate-changelog.outputs.new_version }}.info
           
       - name: Create GitHub Release
         id: create-release
